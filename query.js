@@ -41,10 +41,10 @@ const createSubscription = async () => {
         let reason;
         console.log("Error___", error.message)
         const toLook = error.message;
-        let result = toLook.includes(isShikha)
-        if(result){
-            reason = 'Email already exists'
-        }
+        // let result = toLook.includes(isShikha)
+        // if(result){
+        //     reason = 'Email already exists'
+        // }
         if(!result){
             result = toLook.includes(uid)
             if(result){
