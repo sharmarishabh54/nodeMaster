@@ -24,13 +24,14 @@ const createUser = async () => {
 // createUser()
 
 const createSubscription = async () => {
-    const uid = 2;
+    const uid = 3;
     try {
         const res = await Subscription.create(
             {
                 userID: uid,
+                class: "Dangerous",
                 subscription_Plan: {
-                    purchaged:false,
+                    purchaged:true,
                     purchagedOn: new Date()
                 },
     
