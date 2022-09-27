@@ -21,6 +21,30 @@ const allSubscription = async () => {
    }
 }
 
+
+
+const createSubscription = async(subscription_Plan, userId)=>{
+    console.log('data of create subscription ___  ',subscription_Plan,userId);
+
+    try{
+        const newSubscription = await Subcription.create({
+            userID:userId,
+            subscription_Plan: subscription_Plan
+        })
+
+        console.log('newSubscription__',newSubscription)
+        return{
+            res: newSubscription,
+            status: true
+        }
+    }
+    catch(error){
+        console.log(error.message)
+        
+    }
+}
+
+
 const updateSubscription = async (id, toUpdate) => {
     console.log("ToUpdate",toUpdate)
     try {
@@ -54,4 +78,4 @@ const deleteSubscription = async (id) => {
 
 }
 
-module.exports = { allSubscription, updateSubscription, deleteSubscription }
+module.exports = { allSubscription, updateSubscription, deleteSubscription,createSubscription }

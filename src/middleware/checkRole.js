@@ -8,8 +8,11 @@ const checkRole = async(req, res, next, role)=>{
     const checkAdmin = await User.findOne({user_email:email},{user_role:1}).lean();
     console.log('checkAdmin ',checkAdmin);
 
-    if(checkAdmin.user_role === 'Admin'){
+    if(checkAdmin.user_role === role){
+
         return next();
+       
+        // return { userId : checkAdmin.userID,  movetoNext:()=>{next()}}
     }
     else{
         return res.status(403).send({

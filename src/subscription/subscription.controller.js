@@ -10,6 +10,19 @@ exports.allSubscriptions = async (req, res) => {
     }
 }
 
+
+exports.createSubscriptions = async (req, res) => {
+    try{
+       const userId =req.user.user_id
+       const {subscription_Plan} = req.body
+       const response = await subscriptionService.createSubscription(subscription_Plan,userId);
+        return res.send(response.res);
+    }
+    catch(error){
+        console.log('error:',error.message)
+    }
+}
+
 exports.updateSubscriptions = async (req, res) => {
     try {
         console.log("Request data:__", req.params.id, req.body);

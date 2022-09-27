@@ -17,7 +17,7 @@ const subscriptionModel = new Schema(
             unique: true
         },
         subscription_Plan:{
-            type:Object,
+            type:String,
             enum:['Silver', 'Gold','Platinum'],
             require: true
         },
