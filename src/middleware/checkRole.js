@@ -1,9 +1,9 @@
 const User = require('../models/user.model')
 
-const checkRole = async(req,res,next)=>{
+const checkRole = async(req, res, next, role)=>{
     const email = req.user.email
 
-    console.log('email', email);
+    console.log('email, role', email, role);
 
     const checkAdmin = await User.findOne({user_email:email},{user_role:1}).lean();
     console.log('checkAdmin ',checkAdmin);
