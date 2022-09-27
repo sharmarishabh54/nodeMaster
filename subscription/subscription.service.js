@@ -21,4 +21,37 @@ const allSubscription = async () => {
    }
 }
 
-module.exports = { allSubscription }
+const updateSubscription = async (id, toUpdate) => {
+    console.log("ToUpdate",toUpdate)
+    try {
+        const update = await Subcription.updateOne({s_id: id}, {$set:toUpdate});
+        return {
+            status: true,
+            res: update
+        }
+    } catch (error) {
+        return {
+            status: false,
+            res: "Not found record"
+        }
+    }
+
+}
+
+const deleteSubscription = async (id) => {
+    try {
+        const update = await Subcription.deleteOne({s_id: id});
+        return {
+            status: true,
+            res: update
+        }
+    } catch (error) {
+        return {
+            status: false,
+            res: "Not found record"
+        }
+    }
+
+}
+
+module.exports = { allSubscription, updateSubscription, deleteSubscription }
