@@ -2,8 +2,8 @@ const userService = require('./user.service');
 
 exports.register = async (req, res) => {
     try {
-        const {firstName, lastName, email, age, gender, password } = req.body;
-        const user = await userService.registerUser(firstName, lastName, email, age, gender, password);
+        const {firstName, lastName, email, age, gender, password, role } = req.body;
+        const user = await userService.registerUser(firstName, lastName, email, age, gender, password , role);
         if(user.isResolved == true){
             res.send({
                 message: 'User has created',

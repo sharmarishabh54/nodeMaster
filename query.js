@@ -24,13 +24,13 @@ const createUser = async () => {
 // createUser()
 
 const createSubscription = async () => {
-    const uid = 3;
+    const uid = 2;
     try {
         const res = await Subscription.create(
             {
                 userID: uid,
-                class: "Dangerous",
                 subscription_Plan: {
+                    plan_type:"Platinum",
                     purchaged:true,
                     purchagedOn: new Date()
                 },
@@ -46,12 +46,12 @@ const createSubscription = async () => {
         // if(result){
         //     reason = 'Email already exists'
         // }
-        if(!result){
+        // if(!result){
             result = toLook.includes(uid)
             if(result){
                 reason = 'UserID already exists'
             }
-        }
+        // }
         console.log("result____", reason);
 
     }

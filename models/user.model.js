@@ -7,24 +7,24 @@ const Schema = mongoose.Schema;
 
 const userModel = new Schema(
     {
-        userID:{
+        userID: {
             type: Number,
             unique: true,
             require: true
         },
-        user_password:{
+        user_password: {
             type: String,
             require: true
         },
-        user_firstName:{
-            type: String,
-            require: true
-        },        
-        user_lastName:{
+        user_firstName: {
             type: String,
             require: true
         },
-        user_age:{
+        user_lastName: {
+            type: String,
+            require: true
+        },
+        user_age: {
             type: Number,
             require: true
         },
@@ -32,18 +32,23 @@ const userModel = new Schema(
             type: String,
             unique: true,
             require: true
-            
+
         },
-        user_gender:{
+        user_gender: {
             type: String,
             enum: ['Male', 'Female'],
             require: true
+        },
+        user_role: {
+            type: String,
+            enum: ['Admin', 'Moderator'],
+            require: true
         }
 
-}, {
+    }, {
     timestamps: true,
-}); 
+});
 
-userModel.plugin(AutoIncrement, {inc_field: 'userID'});
+userModel.plugin(AutoIncrement, { inc_field: 'userID' });
 
 module.exports = mongoose.model('User', userModel);

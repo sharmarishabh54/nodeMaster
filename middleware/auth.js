@@ -7,11 +7,12 @@ const verifyToken = (req, res, next) => {
     if(!token){
         return res.status(403).send('A token is required for authorization');
     };
-
+    
     try {
         const decode = jwt.verify(token,key);
-        console.log(decode);
-        req.user = decode;
+        console.log('this is decode__',decode);
+            req.user = decode;
+        
     } catch (error) {
         return res.status(401).send("Invalid Token");
     }

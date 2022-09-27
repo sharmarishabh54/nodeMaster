@@ -8,7 +8,7 @@ const { key } = require('../config')
 
 mongo.connect()
 
-const registerUser = async (firstName, lastName, email, age, gender, password) => {
+const registerUser = async (firstName, lastName, email, age, gender, password, role) => {
     const payload = {
         firstname: firstName,
         lastName: lastName,
@@ -25,7 +25,8 @@ const registerUser = async (firstName, lastName, email, age, gender, password) =
             user_email: email,
             user_password: password,
             user_age: 23,
-            user_gender: 'Male'
+            user_gender: gender,
+            user_role:role
         });
         console.log("Response:", res);
         return {isResolved: true, res: res}
@@ -55,7 +56,7 @@ const loginUser = async (email, password) => {
     console.log(email, password)
     const find = await User.find();
     const findUser = await User.findOne({user_email:email});
-    console.log("FindUser:__", findUser, "FindAll__", find);
+    // console.log("FindUser:__", findUser, "FindAll__", find);
 
     if(!findUser){
         console.log("User not found");
@@ -73,16 +74,17 @@ const loginUser = async (email, password) => {
         }
     };
 
+
     const token = jwt.sign(
         {
             user_id: findUser.userID, email:findUser.user_email
         }, key, {
             expiresIn: "2h"
         }
-    )
 
-    return {authID: token};
+        )
 
+            return {authID: token};
 
 }
 
