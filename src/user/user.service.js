@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mongo = require('../libs/manager');
+const mongo = require('../../libs/manager');
 const User = require('../models/user.model');
 const Counter = require('../models/counter.model');
 const { find } = require('../models/user.model');
-const { key } = require('../config')
+const { key } = require('../../config')
 
 mongo.connect()
 

@@ -1,5 +1,5 @@
 const Subcription = require('../models/subscription.model');
-const mongo = require('../libs/manager');
+const mongo = require('../../libs/manager');
 
 mongo.connect();
 

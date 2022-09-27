@@ -1,6 +1,6 @@
 const express = require('express');
-const { userRoutes } = require('./user');
-const { subscriptionRoutes } = require('./subscription')
+const { userRoutes } = require('./src/user');
+const { subscriptionRoutes } = require('./src/subscription')
 
 const apiRoutes = express.Router({mergeParams: true});
 

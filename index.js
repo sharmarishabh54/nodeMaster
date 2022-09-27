@@ -1,6 +1,5 @@
 const express = require('express');
 const {port} = require('./config');
-const mongo = require('./libs/manager');
 const bodyParser = require('body-parser');
 const appRoutes = require('./index.route');
 const app = express();
