@@ -9,7 +9,8 @@ const subscriptionModel = new Schema(
     {
         s_id: {
             type: Number,
-            require: true
+            require: true,
+            unique:true
         },
         userID:{
             type:Number,
@@ -18,7 +19,7 @@ const subscriptionModel = new Schema(
         },
         subscription_Plan:{
             type:String,
-            enum:['Silver', 'Gold','Platinum'],
+            enum:['Silver','Gold','Platinum'],
             require: true
         },
     },
@@ -26,5 +27,5 @@ const subscriptionModel = new Schema(
         timestamps: true,
     }
 );
-subscriptionModel.plugin(AutoIncrement, {inc_field: 's_id'});
+subscriptionModel.plugin(AutoIncrement, {inc_field:'s_id'});
 module.exports = mongoose.model('Subscription', subscriptionModel);

@@ -2,17 +2,23 @@ const express = require('express');
 const router = express.Router();
 const subscriptionController = require('./subscription.controller');
 const auth = require('../middleware/auth');
-const checkRole = require('../middleware/checkRole');
 
-router.get('/subscritions',auth,(req, res, next) => {
-    checkRole(req, res, next, 'Moderator');
+
+router.get('/subscritions',(req,res,next)=>{
+    auth(req,res,next,'Admin')
 }, subscriptionController.allSubscriptions);
 
-router.post('/subscriptions',auth,(req, res, next) =>{
-    checkRole(req, res, next, 'Moderator');
+router.post('/subscriptions',(req, res, next) =>{
+    auth(req, res, next, 'Moderator');
 },subscriptionController.createSubscriptions);
+
 
 router.patch('/subscritions/:id', auth, subscriptionController.updateSubscriptions);
 router.delete('/subscritions/:id', auth, subscriptionController.deleteSubscriptions);
+
+
+router.get('/subscritions/moderator',(req, res, next) => {
+    auth(req, res, next, 'Moderator');
+}, subscriptionController.getUserAndSubscriptions);
 
 module.exports = router;

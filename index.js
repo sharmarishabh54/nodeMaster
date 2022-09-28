@@ -4,6 +4,10 @@ const bodyParser = require('body-parser');
 const appRoutes = require('./index.route');
 const app = express();
 
+
+app.set('view engine','hbs')
+app.set('views','views')
+
 app.use(bodyParser.raw());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
