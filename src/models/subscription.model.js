@@ -12,10 +12,10 @@ const subscriptionModel = new Schema(
             require: true,
             unique:true
         },
-        userID:{
-            type:Number,
+        user_ID:{
+            type: Number,
             require: true,
-            unique: true
+            unique:true
         },
         subscription_Plan:{
             type:String,

@@ -2,6 +2,7 @@ const Subcription = require('../models/subscription.model');
 const mongo = require('../../libs/manager');
 const Counter = require('../models/counter.model');
 const User = require('../models/user.model');
+const mongoose = require('mongoose').Aggregate.exec;
 
 mongo.connect();
 
@@ -30,7 +31,7 @@ const createSubscription = async (subscription_Plan, userId) => {
 
     try {
         const newSubscription = await Subcription.create({
-            userID: userId,
+            user_ID: userId,
             subscription_Plan: subscription_Plan
         })
 
@@ -43,7 +44,7 @@ const createSubscription = async (subscription_Plan, userId) => {
             }
         ).lean();
 
-        
+
         console.log('newSubscription__', newSubscription, userData)
         return {
             isCreated: true,
@@ -118,29 +119,31 @@ const deleteSubscription = async (id) => {
 
 }
 
-
 // only moderator user access own information
 
 const getUserAndSubscription = async (id) => {
     try {
-        const subscriptionData = await Subcription.findOne({ userID: id }).lean()
-        const userData = await User.findOne({ userID: id },
+        const data = await User.aggregate([
             {
-                userID: 1,
-                user_firstName: 1,
-                user_lastName: 1,
-                user_email: 1
-            })
-            .lean()
-
-        console.log('Moderator subscription data', subscriptionData, userData);
-        return {
-            status: true,
-            res: {
-                user_Info: userData,
-                subscription_Plan: subscriptionData
+                $lookup: {
+                    from: "subscriptions",
+                    localField: "userID",
+                    foreignField: "user_ID ",
+                    as: "subs"
+                }
+            }, {
+                $project: {
+                    userID: 1,
+                    user_firstName: 1,
+                    user_lastName: 1,
+                    user_email: 1,
+                    "subs.s_id": 1,
+                    "subs.subscription_Plan": 1
+                }
             }
-        }
+        ]);
+        console.log('hi');
+        console.log('....................\n', data);
     }
     catch (err) {
         return {
@@ -151,3 +154,23 @@ const getUserAndSubscription = async (id) => {
 }
 
 module.exports = { allSubscription, updateSubscription, deleteSubscription, createSubscription, getUserAndSubscription }
+// try {
+//     const subscriptionData = await Subcription.findOne({ userID: id }).lean()
+//     const userData = await User.findOne({ userID: id },
+//         {
+//             userID: 1,
+//             user_firstName: 1,
+//             user_lastName: 1,
+//             user_email: 1
+//         })
+//         .lean()
+
+//     console.log('Moderator subscription data', subscriptionData, userData);
+//     return {
+//         status: true,
+//         res: {
+//             user_Info: userData,
+//             subscription_Plan: subscriptionData
+//         }
+//     }
+// }
