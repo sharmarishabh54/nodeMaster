@@ -149,6 +149,13 @@ const getUserAndSubscription = async (id) => {
                 },
             },
         ]);
+
+
+        // "fullName": {
+        //     $concat: ["$firstName", " ", "$lastName"]
+        //   }                                                // add in project
+      
+          
         console.log('....................\n', data);
         return {
             status:true,
