@@ -92,6 +92,7 @@ const updateSubscription = async (id, toUpdate) => {
         const update = await Subcription.updateOne({ s_id: id }, { $set: toUpdate });
         return {
             status: true,
+            message:'Your Subscription plan is updated.',
             res: update
         }
     } catch (error) {
@@ -105,10 +106,12 @@ const updateSubscription = async (id, toUpdate) => {
 
 const deleteSubscription = async (id) => {
     try {
-        const update = await Subcription.deleteOne({ s_id: id });
+        console.log('id.....',id)
+        const update = await Subcription.deleteOne({s_id:id});
+        console.log(update)
         return {
             status: true,
-            res: update
+            res: 'Your subscription plan is deactivate'
         }
     } catch (error) {
         return {
@@ -119,31 +122,38 @@ const deleteSubscription = async (id) => {
 
 }
 
-// only moderator user access own information
+// only moderator user accessing  own information
 
 const getUserAndSubscription = async (id) => {
     try {
         const data = await User.aggregate([
             {
+                $match: {
+                    userID: id,
+                },
+            },
+            {
                 $lookup: {
-                    from: "subscriptions",
-                    localField: "userID",
-                    foreignField: "user_ID ",
-                    as: "subs"
-                }
-            }, {
+                    from: 'subscriptions',
+                    localField: 'userID',      
+                    foreignField: 'user_ID',   
+                    as: 'sub',            
+                },
+            },
+            {
                 $project: {
                     userID: 1,
                     user_firstName: 1,
-                    user_lastName: 1,
-                    user_email: 1,
-                    "subs.s_id": 1,
-                    "subs.subscription_Plan": 1
-                }
-            }
+                    'sub.user_ID': 1,
+                    'sub.subscription_Plan': 1,
+                },
+            },
         ]);
-        console.log('hi');
         console.log('....................\n', data);
+        return {
+            status:true,
+            res:data
+        }
     }
     catch (err) {
         return {
@@ -154,23 +164,3 @@ const getUserAndSubscription = async (id) => {
 }
 
 module.exports = { allSubscription, updateSubscription, deleteSubscription, createSubscription, getUserAndSubscription }
-// try {
-//     const subscriptionData = await Subcription.findOne({ userID: id }).lean()
-//     const userData = await User.findOne({ userID: id },
-//         {
-//             userID: 1,
-//             user_firstName: 1,
-//             user_lastName: 1,
-//             user_email: 1
-//         })
-//         .lean()
-
-//     console.log('Moderator subscription data', subscriptionData, userData);
-//     return {
-//         status: true,
-//         res: {
-//             user_Info: userData,
-//             subscription_Plan: subscriptionData
-//         }
-//     }
-// }

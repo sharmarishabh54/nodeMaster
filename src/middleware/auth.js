@@ -22,7 +22,7 @@ const verifyToken = async (req, res, next,role) => {
             return next()
         }
         else{
-            return res.status(401).send("Invalid user");  
+            return res.status(401).send("Access denied");  
         }
 
     } catch (error) {
