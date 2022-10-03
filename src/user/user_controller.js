@@ -1,4 +1,5 @@
 const userService = require('./user.service');
+const createPdf = require('../util/pdf')
 
 exports.register = async (req, res) => {
     try {
@@ -41,8 +42,22 @@ exports.update =async(req, res)=>{
     try{
         const user_id = req.user.user_id
         const {subscription_plan}= req.body
-        const response =  await userService.updateUser(user_id,subscription_plan)
-        res.send(response);
+        const response =  await userService.updateUser(user_id,subscription_plan);
+
+        
+        if(response.status){
+            const{userID,user_firstName,user_lastName} = response.userfind;
+
+            createPdf({
+                pageTitle: 'Subscription Bill',
+                userId:userID,
+                firstName:user_firstName,
+                lastName: user_lastName,
+                subscription_Plan:response.plan
+            }); 
+        }
+        res.send(response); 
+       
     }catch(err){
         console.log(err)
         res.send(err.message);

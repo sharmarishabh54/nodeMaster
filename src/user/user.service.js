@@ -98,30 +98,50 @@ const updateUser = async(user_id, subscriptionPlan)=>{
     try{
         console.log('user id and subscriptionPlan',user_id,subscriptionPlan);
 
+        const userFind = await User.aggregate([
+            {
+                $match :{ userID: user_id}
+            },
+            {
+                $project:{
+                    userID:1,
+                    user_firstName:1,
+                    user_lastName:1,
+                }
+            }
+        ])
+        
+        // console.log('user data',userFind);
+
+
+        // get subscription enum values
         const sub = await Subscription.schema.path('subscription_Plan').enumValues
         console.log('subscription values', sub);
 
         const sub_value = sub.indexOf(subscriptionPlan);
         console.log("subscription index",sub_value)
 
-        if(sub_value){
-          const userAddSubcriptionPlan = await User.updateOne({userID:user_id},
-            {$set : 
-                {user_subscriptionId:sub_value+1}
-            })   
-            console.log("update",userAddSubcriptionPlan);
-            return {
-                status:true,
-                message:"Now you subscription Plan",
-                res:userAddSubcriptionPlan
-            }
-        }
-        else{
+        // iff subscription plan number is not exist
+        if(sub_value === -1){
             return{
                 status:false,
                 res:'Not valid Subscription plan'
             }
         }
+        
+
+        const userAddSubcriptionPlan = await User.updateOne({userID:user_id},
+          {$set : 
+              {user_subscriptionId:sub_value+1}
+          })   
+          console.log("update",userAddSubcriptionPlan);
+
+          return {
+              status:true,
+              message:"Now you have subscription Plan",
+              userfind: userFind[0],
+              subscription_Plan:subscriptionPlan
+          }
         
     }
     catch(err){
