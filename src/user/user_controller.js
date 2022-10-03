@@ -35,3 +35,16 @@ exports.login = async (req, res) => {
         console.log(error)
     }
 }
+
+
+exports.update =async(req, res)=>{
+    try{
+        const user_id = req.user.user_id
+        const {subscription_plan}= req.body
+        const response =  await userService.updateUser(user_id,subscription_plan)
+        res.send(response);
+    }catch(err){
+        console.log(err)
+        res.send(err.message);
+    }
+}

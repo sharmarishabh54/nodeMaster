@@ -5,14 +5,10 @@ const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const Schema = mongoose.Schema;
 
+
 const subscriptionModel = new Schema(
     {
         s_id: {
-            type: Number,
-            require: true,
-            unique:true
-        },
-        user_ID:{
             type: Number,
             require: true,
             unique:true

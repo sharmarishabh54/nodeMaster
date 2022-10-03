@@ -43,6 +43,10 @@ const userModel = new Schema(
             type: String,
             enum: ['Admin', 'Moderator'],
             require: true
+        },
+        user_subscriptionId:{
+            type:Number,
+            default:0
         }
 
     }, {

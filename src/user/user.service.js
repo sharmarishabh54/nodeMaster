@@ -4,7 +4,8 @@ const mongo = require('../../libs/manager');
 const User = require('../models/user.model');
 const Counter = require('../models/counter.model');
 const { find } = require('../models/user.model');
-const { key } = require('../../config')
+const { key } = require('../../config');
+const Subscription = require('../models/subscription.model');
 
 mongo.connect()
 
@@ -31,22 +32,26 @@ const registerUser = async (firstName, lastName, email, age, gender, password, r
         console.log("Response:", res);
         return {isResolved: true, res: res}
     } catch (error) {
-        let reason;
+        let reason,res;
         const e = error.message
         const toLook = e.includes(email);
         console.log('toLook__',toLook)
         if(toLook){
             reason = 'Email already exists';
         }
-        const a  = await Counter.find({id: "userID"}, {seq: 1}).lean();
-        console.log("SEQ:__",a)
-        const value = a[0].seq - 1;
-        const res = await Counter.updateOne(
-            {id: "userID"},
-            {$set:{
-            seq: value
-        }
-    })
+        const sequence = await Counter.find({id: "userID"}, {seq: 1}).lean();
+        const getSequence = await User.find().sort({userID: -1}).limit(1).lean();
+        console.log('sequence__ ',sequence[0].seq,'getSequence',getSequence[0]);
+        const value = sequence[0].seq - 1;
+
+        if(sequence[0].seq >getSequence[0].userID ){
+            res = await Counter.updateOne(
+                {id: "userID"},
+                {$set:{
+                seq: value
+            }
+        })
+    }
     console.log("RES + Value__:", res, value)
     return {isResolved: false, res: res, value:reason}
     }
@@ -89,5 +94,43 @@ const loginUser = async (email, password) => {
 }
 
 
+const updateUser = async(user_id, subscriptionPlan)=>{
+    try{
+        console.log('user id and subscriptionPlan',user_id,subscriptionPlan);
 
-module.exports = { registerUser, loginUser }
+        const sub = await Subscription.schema.path('subscription_Plan').enumValues
+        console.log('subscription values', sub);
+
+        const sub_value = sub.indexOf(subscriptionPlan);
+        console.log("subscription index",sub_value)
+
+        if(sub_value){
+          const userAddSubcriptionPlan = await User.updateOne({userID:user_id},
+            {$set : 
+                {user_subscriptionId:sub_value+1}
+            })   
+            console.log("update",userAddSubcriptionPlan);
+            return {
+                status:true,
+                message:"Now you subscription Plan",
+                res:userAddSubcriptionPlan
+            }
+        }
+        else{
+            return{
+                status:false,
+                res:'Not valid Subscription plan'
+            }
+        }
+        
+    }
+    catch(err){
+        return {
+            status: false,
+            res: "Not found record"
+        }
+    }
+}
+
+
+module.exports = { registerUser, loginUser, updateUser}
