@@ -17,6 +17,7 @@
     "handlebars": "^4.7.7",
     "handlebars-pdf": "^1.0.1",
     "hbs": "^4.2.0",
+    "joi": "^17.6.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.10.0",
     "mongoose": "^6.6.1",

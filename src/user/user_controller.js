@@ -1,5 +1,6 @@
 const userService = require('./user.service');
 const createPdf = require('../util/pdf')
+const userValidation = require('./user.validation');
 
 exports.register = async (req, res) => {
     try {
@@ -42,6 +43,8 @@ exports.update =async(req, res)=>{
     try{
         const user_id = req.user.user_id
         const {subscription_plan}= req.body
+        console.log('controller susplan',subscription_plan);
+        await userValidation.update.validateAsync({...req.body});
         const response =  await userService.updateUser(user_id,subscription_plan);
 
         

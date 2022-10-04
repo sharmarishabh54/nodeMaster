@@ -111,11 +111,11 @@ const updateUser = async(user_id, subscriptionPlan)=>{
             }
         ])
         
-        // console.log('user data',userFind);
+        console.log('user data',userFind);
 
 
         // get subscription enum values
-        const sub = await Subscription.schema.path('subscription_Plan').enumValues
+        const sub = await Subscription.schema.path('subscription_Plan').enumValues;
         console.log('subscription values', sub);
 
         const sub_value = sub.indexOf(subscriptionPlan);
