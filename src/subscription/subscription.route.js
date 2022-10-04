@@ -8,8 +8,8 @@ router.get('/subscriptions',(req,res,next)=>{
     auth(req,res,next,'Admin')
 }, subscriptionController.allSubscriptions);
 
-router.post('/subscriptions',(req, res, next) =>{
-    auth(req, res, next, 'Moderator');
+router.post('/subscriptions',(req, res, next)=>{
+    auth(req,res,next,'Admin');
 },subscriptionController.createSubscriptions);
 
 

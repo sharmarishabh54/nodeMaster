@@ -11,5 +11,8 @@ router.patch('/update',(req,res,next)=>{
     auth(req,res,next,"Moderator")
 },userController.update);
 
+router.get('/seeSubscription',(req,res,next)=>{
+    auth(req,res,next,"Admin");
+},userController.seeSubscription);
 
 module.exports = router

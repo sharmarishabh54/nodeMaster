@@ -2,7 +2,6 @@ const Subcription = require('../models/subscription.model');
 const mongo = require('../../libs/manager');
 const Counter = require('../models/counter.model');
 const User = require('../models/user.model');
-const mongoose = require('mongoose').Aggregate.exec;
 
 mongo.connect();
 
@@ -26,45 +25,25 @@ const allSubscription = async () => {
 
 
 
-const createSubscription = async (subscription_Plan, userId) => {
-    console.log('data of create subscription ___  ', subscription_Plan, userId);
+const createSubscription = async (subscription_plan) => {
+    console.log('data of create subscription ___  ', subscription_plan);
 
     try {
         const newSubscription = await Subcription.create({
-            user_ID: userId,
-            subscription_Plan: subscription_Plan
+            subscription_plan: subscription_plan
         })
-
-        const userData = await User.findOne({ userID: userId },
-            {
-                userID: 1,
-                user_firstName: 1,
-                user_lastName: 1,
-                user_email: 1
-            }
-        ).lean();
-
-
-        console.log('newSubscription__', newSubscription, userData)
+        console.log('newSubscription__', newSubscription)
         return {
             isCreated: true,
             res: {
-                user_Info: userData,
                 subscription_Plan: newSubscription
             },
             status: true
         }
     }
     catch (error) {
-        let reason;
         const err = error.message;
-        const toLook = err.includes(userId);
-        console.log('toLook', toLook);
-
-        if (toLook) {
-            reason = 'You have already subscription Plan';
-        }
-
+        console.log(err);
         const sequence = await Counter.find({ id: 's_id' }, { seq: 1 }).lean();
         const value = sequence[0].seq - 1;
         const res = await Counter.updateOne(
@@ -78,10 +57,8 @@ const createSubscription = async (subscription_Plan, userId) => {
 
         return {
             isCreated: false,
-            res: res,
-            message: reason
+            message: err
         }
-
     }
 }
 
@@ -92,7 +69,7 @@ const updateSubscription = async (id, toUpdate) => {
         const update = await Subcription.updateOne({ s_id: id }, { $set: toUpdate });
         return {
             status: true,
-            message:'Your Subscription plan is updated.',
+            message: 'Your Subscription plan is updated.',
             res: update
         }
     } catch (error) {
@@ -106,8 +83,8 @@ const updateSubscription = async (id, toUpdate) => {
 
 const deleteSubscription = async (id) => {
     try {
-        console.log('id.....',id)
-        const update = await Subcription.deleteOne({s_id:id});
+        console.log('id.....', id)
+        const update = await Subcription.deleteOne({ s_id: id });
         console.log(update)
         return {
             status: true,
@@ -135,9 +112,9 @@ const getUserAndSubscription = async (id) => {
             {
                 $lookup: {
                     from: 'subscriptions',
-                    localField: 'userID',      
-                    foreignField: 'user_ID',   
-                    as: 'sub',            
+                    localField: 'userID',
+                    foreignField: 'user_ID',
+                    as: 'sub',
                 },
             },
             {
@@ -149,17 +126,10 @@ const getUserAndSubscription = async (id) => {
                 },
             },
         ]);
-
-
-        // "fullName": {
-        //     $concat: ["$firstName", " ", "$lastName"]
-        //   }                                                // add in project
-      
-          
         console.log('....................\n', data);
         return {
-            status:true,
-            res:data
+            status: true,
+            res: data
         }
     }
     catch (err) {
@@ -170,4 +140,4 @@ const getUserAndSubscription = async (id) => {
     }
 }
 
-module.exports = { allSubscription, updateSubscription, deleteSubscription, createSubscription, getUserAndSubscription }
+module.exports = { allSubscription, updateSubscription, deleteSubscription, createSubscription, getUserAndSubscription };

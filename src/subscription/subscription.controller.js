@@ -1,8 +1,5 @@
 const subscriptionService = require('./subscription.service');
-
-const createPdf =  require('../util/pdf')
-
-
+const subscriptionValidation = require('./subscription.validation');
 
 exports.allSubscriptions = async (req, res) => {
     try {
@@ -13,28 +10,16 @@ exports.allSubscriptions = async (req, res) => {
     }
 }
 
-
 exports.createSubscriptions = async (req, res) => {
     try {
-        const userId = req.user.user_id
-        const { subscription_Plan } = req.body
-        const response = await subscriptionService.createSubscription(subscription_Plan, userId);
+        const { subscription_plan } = req.body
+        await subscriptionValidation.create.validateAsync({ ...req.body });
+        const response = await subscriptionService.createSubscription(subscription_plan);
         if (response.isCreated) {
-
-            const { user_Info, subscription_Plan } = response.res;
-
-            createPdf({
-                pageTitle: 'Subscription Bill',
-                firstName: user_Info.user_firstName,
-                lastName: user_Info.user_lastName,
-                subscription_Plan: subscription_Plan.subscription_Plan
-            })
-
             return res.status(200).send({
-                message :"Welcome to Prime",
-                data:response.res
-             })
-    
+                message: "Welcome to Prime",
+                data: response.res
+            })
         }
         else {
             return res.send({
@@ -43,13 +28,13 @@ exports.createSubscriptions = async (req, res) => {
         }
     }
     catch (error) {
-        console.log('error:', error.message);
+        res.send({ message: error.message });
     }
 }
 
 exports.updateSubscriptions = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         console.log("Request data:__", req.params.id, req.body);
         const response = await subscriptionService.updateSubscription(id, req.body);
         if (!response.status) {
@@ -65,10 +50,10 @@ exports.updateSubscriptions = async (req, res) => {
 
 exports.deleteSubscriptions = async (req, res) => {
     try {
-        const {id} =req.params
+        const { id } = req.params
 
         const response = await subscriptionService.deleteSubscription(id);
-        console.log('responce__',response)
+        console.log('responce__', response)
         if (!response.status) {
             res.send(response.res).status(404);
         }
@@ -78,8 +63,6 @@ exports.deleteSubscriptions = async (req, res) => {
         return res.send(error.message).status(404);
     }
 }
-
-
 
 exports.getUserAndSubscriptions = async (req, res) => {
     try {
