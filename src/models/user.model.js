@@ -46,9 +46,16 @@ const userModel = new Schema(
         },
         user_subscriptionId:{
             type:Number,
-            default:0
+            default:0,
+        },
+        subscriptionPlan_active:{
+            type:Date,
+            default:null
+        },
+        subscriptionPlan_expire:{
+            type:Date,
+            default:null
         }
-
     }, {
     timestamps: true,
 });

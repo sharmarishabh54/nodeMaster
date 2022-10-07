@@ -1,5 +1,6 @@
 const subscriptionService = require('./subscription.service');
-const subscriptionValidation = require('./subscription.validation');
+const {planValidation} = require('../util/validation');
+
 
 exports.allSubscriptions = async (req, res) => {
     try {
@@ -10,16 +11,15 @@ exports.allSubscriptions = async (req, res) => {
     }
 }
 
+
 exports.createSubscriptions = async (req, res) => {
     try {
-        const { subscription_plan } = req.body
-        await subscriptionValidation.create.validateAsync({ ...req.body });
-        const response = await subscriptionService.createSubscription(subscription_plan);
+        const { subscription_plan ,plan_validity_days} = req.body
+        await  planValidation.validateAsync({ subscription_plan });
+
+        const response = await subscriptionService.createSubscription(subscription_plan,plan_validity_days);
         if (response.isCreated) {
-            return res.status(200).send({
-                message: "Welcome to Prime",
-                data: response.res
-            })
+            return res.status(200).send(response.res)
         }
         else {
             return res.send({
@@ -31,6 +31,7 @@ exports.createSubscriptions = async (req, res) => {
         res.send({ message: error.message });
     }
 }
+
 
 exports.updateSubscriptions = async (req, res) => {
     try {
@@ -48,6 +49,7 @@ exports.updateSubscriptions = async (req, res) => {
     }
 }
 
+
 exports.deleteSubscriptions = async (req, res) => {
     try {
         const { id } = req.params
@@ -64,16 +66,3 @@ exports.deleteSubscriptions = async (req, res) => {
     }
 }
 
-exports.getUserAndSubscriptions = async (req, res) => {
-    try {
-        const userId = req.user.user_id;
-        console.log('userId', userId)
-        const response = await subscriptionService.getUserAndSubscription(userId);
-        return res.status(200).send(response.res)
-
-    }
-    catch (error) {
-        console.log('error:', error.message);
-        return res.send(error.message).status(404);
-    }
-}

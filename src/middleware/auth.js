@@ -4,8 +4,7 @@ const User = require('../models/user.model')
 
 const verifyToken = async (req, res, next,role) => {
     const token = req.headers["authorization"];
-    console.log(role ,'...................')
-    console.log('Token:', req.headers)
+
     if (!token) {
         return res.status(403).send('A token is required for authorization');
     };
@@ -16,10 +15,12 @@ const verifyToken = async (req, res, next,role) => {
         req.user = decode;
 
         const checkUserType = await User.findOne({ user_email: req.user.email },{user_role:1}).lean();
-        console.log('checkUserType',checkUserType);
-
+        
         if(checkUserType.user_role === role){
-            return next()
+            return next();
+        }
+        else if(role === "All"){
+            return next();
         }
         else{
             return res.status(401).send("Access denied");  

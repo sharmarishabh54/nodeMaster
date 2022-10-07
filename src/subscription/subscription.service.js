@@ -25,19 +25,17 @@ const allSubscription = async () => {
 
 
 
-const createSubscription = async (subscription_plan) => {
-    console.log('data of create subscription ___  ', subscription_plan);
+const createSubscription = async (subscription_plan,plan_validity) => {
 
     try {
         const newSubscription = await Subcription.create({
-            subscription_plan: subscription_plan
+            subscription_plan: subscription_plan,
+            plan_validity_days:plan_validity
         })
-        console.log('newSubscription__', newSubscription)
+
         return {
             isCreated: true,
-            res: {
-                subscription_Plan: newSubscription
-            },
+            res:newSubscription,
             status: true
         }
     }
@@ -64,7 +62,7 @@ const createSubscription = async (subscription_plan) => {
 
 
 const updateSubscription = async (id, toUpdate) => {
-    console.log("ToUpdate", toUpdate)
+    
     try {
         const update = await Subcription.updateOne({ s_id: id }, { $set: toUpdate });
         return {
@@ -83,7 +81,7 @@ const updateSubscription = async (id, toUpdate) => {
 
 const deleteSubscription = async (id) => {
     try {
-        console.log('id.....', id)
+        
         const update = await Subcription.deleteOne({ s_id: id });
         console.log(update)
         return {
@@ -99,45 +97,6 @@ const deleteSubscription = async (id) => {
 
 }
 
-// only moderator user accessing  own information
 
-const getUserAndSubscription = async (id) => {
-    try {
-        const data = await User.aggregate([
-            {
-                $match: {
-                    userID: id,
-                },
-            },
-            {
-                $lookup: {
-                    from: 'subscriptions',
-                    localField: 'userID',
-                    foreignField: 'user_ID',
-                    as: 'sub',
-                },
-            },
-            {
-                $project: {
-                    userID: 1,
-                    user_firstName: 1,
-                    'sub.user_ID': 1,
-                    'sub.subscription_Plan': 1,
-                },
-            },
-        ]);
-        console.log('....................\n', data);
-        return {
-            status: true,
-            res: data
-        }
-    }
-    catch (err) {
-        return {
-            status: false,
-            res: "Not found record"
-        }
-    }
-}
 
-module.exports = { allSubscription, updateSubscription, deleteSubscription, createSubscription, getUserAndSubscription };
+module.exports = { allSubscription, updateSubscription, deleteSubscription, createSubscription};

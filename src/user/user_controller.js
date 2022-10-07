@@ -1,6 +1,6 @@
 const userService = require('./user.service');
 const createPdf = require('../util/pdf')
-const userValidation = require('./user.validation');
+const {planValidation} = require('../util/validation');
 
 exports.register = async (req, res) => {
     try {
@@ -39,24 +39,25 @@ exports.login = async (req, res) => {
 }
 
 
-exports.update = async (req, res) => {
+exports.buySubscription = async (req, res) => {
     try {
         const user_id = req.user.user_id
         const { subscription_plan } = req.body
-        console.log('controller susplan', subscription_plan);
-        await userValidation.update.validateAsync({ ...req.body });
-        const response = await userService.updateUser(user_id, subscription_plan);
+        await planValidation.validateAsync({ ...req.body });
+        const response = await userService.buySubscriptionPlan(user_id, subscription_plan);
 
 
         if (response.status) {
             const { userID, user_firstName, user_lastName } = response.userfind;
+       
 
             createPdf({
                 pageTitle: 'Subscription Bill',
                 userId: userID,
                 firstName: user_firstName,
                 lastName: user_lastName,
-                subscription_Plan: response.subscription_Plan
+                subscription_Plan: response.subscription_Plan,
+                plan_expire_on:response.plan_expire,
             });
         }
         res.send(response);
@@ -67,13 +68,71 @@ exports.update = async (req, res) => {
     }
 }
 
+
+exports.update = async(req,res)=>{
+     try{
+        const userId = req.user.user_id;
+        const updateInfo = await userService.updateUser(userId,req.body);
+        console.log(updateInfo);
+        res.send(updateInfo);
+     }
+     catch(err){
+        console.log(err)
+        res.send(err.message);
+     }
+}
+
 exports.seeSubscription = async (req, res) => {
     try {
         const userId = req.user.user_id;
-        console.log('userId', userId)
         const response = await userService.seeSubscription();
         return res.status(200).send(response.res)
     } catch (err) {
+        console.log('error:', err.message);
+        return res.send(err.message).status(404);
+    }
+}
+
+
+exports.moderatorUser = async(req,res)=>{
+    try {
+        const userId = req.user.user_id;
+        const response = await userService.moderatorPlan(userId);
+        return res.status(200).send(response)
+    } catch (err) {
+        console.log('error:', err.message);
+        return res.send(err.message).status(404);
+    }
+}
+
+
+exports.isSubscribed = async(req,res,next)=>{
+    try {
+        const userId = req.user.user_id;
+        const response = await userService.moderatorPlan(userId);
+
+        if(response.Days_left >= 0){
+            return next();
+        }
+        else{
+            return res.send({
+                message:"your plan is expired"
+            })
+        }
+
+    } catch (err) {
+        console.log('error:', err.message);
+        return res.send(err.message).status(404);
+    }
+}
+
+
+exports.deleteUser = async(req,res)=>{
+    try{
+        const userId = req.user.user_id;
+        const response=  await  userService.deleteUser(userId);
+        res.send(response);
+    }catch(err){
         console.log('error:', err.message);
         return res.send(err.message).status(404);
     }

@@ -14,16 +14,12 @@ router.post('/subscriptions',(req, res, next)=>{
 
 
 router.patch('/subscriptions/:id',  (req, res, next) =>{
-    auth(req, res, next, 'Moderator');
+    auth(req, res, next, 'Admin');
 }, subscriptionController.updateSubscriptions);
 
 router.delete('/subscriptions/:id', (req, res, next) =>{
-    auth(req, res, next, 'Moderator');
+    auth(req, res, next, 'Admin');
 }, subscriptionController.deleteSubscriptions);
 
-
-router.get('/subscriptions/moderator',(req, res, next) => {
-    auth(req, res, next, 'Moderator');
-}, subscriptionController.getUserAndSubscriptions);
 
 module.exports = router;

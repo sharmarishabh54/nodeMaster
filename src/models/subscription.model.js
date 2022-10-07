@@ -16,6 +16,10 @@ const subscriptionModel = new Schema(
             type: String,
             unique: true,
             require: true
+        },
+        plan_validity_days:{
+            type:Number,
+            require:true
         }
     }
 );
