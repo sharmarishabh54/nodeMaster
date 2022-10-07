@@ -185,7 +185,8 @@ const seeSubscription = async () => {
                 $project: {
                     userID: 1,
                     user_firstName: 1,
-                    'sub.s_id': 1,
+                    subscriptionPlan_active:1,
+                    subscriptionPlan_expire: 1,
                     'sub.subscription_plan': 1,
                 },
             },

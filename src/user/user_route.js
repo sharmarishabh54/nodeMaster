@@ -19,7 +19,7 @@ router.get('/seeAllSubscription', (req, res, next) => {
     auth(req, res, next, "Admin");
 }, userController.seeSubscription);
 
-router.get('/userSubscripytion', (req, res, next) => {
+router.get('/userSubscription', (req, res, next) => {
     auth(req, res, next, "Moderator")
 }, userController.moderatorUser);
 
